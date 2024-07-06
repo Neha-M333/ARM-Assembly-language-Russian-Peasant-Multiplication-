@@ -1,0 +1,39 @@
+AREA RussianPeasantMultiplication, CODE, READONLY
+    ENTRY
+    EXPORT __main
+
+__main
+    ; Initialize registers
+    LDR R0, =0xA       ; Load multiplicand (example: 10)
+    LDR R1, =0x6       ; Load multiplier (example: 6)
+    MOV R2, #0         ; Initialize product to 0
+
+    ; Main loop for Russian Peasant Multiplication
+loop
+    ; Check if the multiplier is zero, if yes, exit loop
+    CMP R1, #0
+    BEQ end_loop
+
+    ; Check if the least significant bit of the multiplier is 1
+    ANDS R3, R1, #1
+    BEQ skip_addition
+
+    ; If LSB is 1, add the multiplicand to the product
+    ADD R2, R2, R0
+
+skip_addition
+    ; Double the multiplicand (left shift by 1)
+    LSLS R0, R0, #1
+
+    ; Halve the multiplier (right shift by 1)
+    LSRS R1, R1, #1
+
+    ; Repeat the loop
+    B loop
+
+end_loop
+    ; Result is in R2
+    ; Infinite loop to stop execution
+    B end_loop
+
+    END
